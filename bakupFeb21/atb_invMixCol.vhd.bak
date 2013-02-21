@@ -1,0 +1,67 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
+
+use work.hwt_aes_yyang_pkg.all;
+
+entity atb_invMixCol is
+end entity;
+
+architecture rtl of atb_invMixCol is
+  signal en:          std_logic;
+  signal rst:         std_logic;
+  signal bi:          DATA_ARRAY;
+  signal bo:          DATA_ARRAY;
+  signal clk:         std_logic;
+  signal xx:          std_logic_vector(7 downto 0);
+component invMixCol is
+  port(
+    rst:        in std_logic;
+    en:         in std_logic;
+    bi:         in  DATA_ARRAY;
+    bo:         out DATA_ARRAY    
+  );
+end component;
+
+begin
+  
+--    imc:   invMixCol port map(
+--      rst=>rst,
+--      en=>en,
+--      bi=>bi,
+--      bo=>bo                      
+--    );
+  
+  xx<=mult(bi(0),X"0e");
+   
+  process begin
+    en<='1';
+    wait;
+  end process;
+  
+  process begin
+    clk<='1';
+    wait for 5 ns;
+    clk<='0';
+    wait for 5 ns;
+  end process;
+  
+  process begin
+    rst<='1';
+    wait for 100 ns;
+    rst<='0';
+    wait;
+  end process;
+  
+  process(clk,rst)
+    begin
+      if rst='1'then
+        bi<=ZEROMATRIX;
+      elsif rising_edge(clk) then
+        bi(0)<=bi(0)+X"11";
+      end if;
+    end process;
+        
+    
+end rtl; 
